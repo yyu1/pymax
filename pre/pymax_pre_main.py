@@ -45,8 +45,6 @@ for this_file in layer_files:
 #-------Read input training sample file and convert coordinates to columns and rows
 #NOTE: coordinates must be in the same units as those given in ulmapx, ulmapy, and pixsize.
 
-in_sample_file = 'sample_train.csv'
-
 train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1)
 xcoord = train_samples[:,1]
 ycoord = train_samples[:,2]
@@ -65,4 +63,10 @@ mmap_args = tuple(
 	for i in range(nlayers)
 )
 
-print(mmap_args)
+def mp_worker(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns):
+	
+
+
+def mp_hander():
+	p = mp.Pool(nlayers)
+	p.map(memmap_exraction, mmap_args)
