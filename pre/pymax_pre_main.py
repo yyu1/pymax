@@ -1,5 +1,7 @@
 import numpy as np
 import os
+import multiprocessing as mp
+import memmap_extraction
 
 #-----------Settings-----------------
 in_sample_file = '/nobackup/yyu1/samples/agb_train_v6/maxent_train_agb_v6_afr_train.csv'
@@ -39,4 +41,28 @@ layer_names = []
 for this_file in layer_files:
 	layer_names.append(os.path.splitext(this_file)[0])
 
-print(layer_names)
+
+#-------Read input training sample file and convert coordinates to columns and rows
+#NOTE: coordinates must be in the same units as those given in ulmapx, ulmapy, and pixsize.
+
+in_sample_file = 'sample_train.csv'
+
+train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1)
+xcoord = train_samples[:,1]
+ycoord = train_samples[:,2]
+
+extract_cols = ((xcoord-ulmapx)/pixsize).astype(np.int32)
+extract_rows = ((ulmapy-ycoord)/pixsize).astype(np.int32)
+
+#----Create input tuple of lists to run memmap_extraction in parallel using multiprocessing Pools
+mmap_args = tuple(
+	[layer_dir+'/'+layer_files[i],
+	layer_datatypes[i],
+	xdim,
+	ydim,
+	extract_rows,
+	extract_cols]
+	for i in range(nlayers)
+)
+
+print(mmap_args)
