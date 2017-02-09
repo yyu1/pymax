@@ -2,9 +2,12 @@ import numpy as np
 import os
 import multiprocessing as mp
 import memmap_extraction
+import datetime
+import random
 
 #-----------Settings-----------------
-in_sample_file = '/nobackup/yyu1/samples/agb_train_v6/maxent_train_agb_v6_afr_train.csv'
+#in_sample_file = '/nobackup/yyu1/samples/agb_train_v6/maxent_train_agb_v6_afr_train.csv'
+in_sample_file = 'sample_train.csv'
 
 layer_dir = '/nobackupp6/nexprojects/CMS-ALOS/maxent/layers/binary/afr'
 layer_files = [
@@ -56,6 +59,7 @@ extract_rows = ((ulmapy-ycoord)/pixsize).astype(np.int32)
 mmap_args = tuple(
 	[layer_dir+'/'+layer_files[i],
 	layer_datatypes[i],
+	i,
 	xdim,
 	ydim,
 	extract_rows,
@@ -63,10 +67,71 @@ mmap_args = tuple(
 	for i in range(nlayers)
 )
 
-def mp_worker(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns):
+#---create list to hold output of extraction
+extract_arrays = []
+for i in range(nlayers):
+	extract_arrays.append(i)
 	
 
+def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
+	print('Extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+	out_vals = memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns
+	#insert extracted values into list
+	extract_arrays[list_index] = out_vals
+	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 
 def mp_hander():
 	p = mp.Pool(nlayers)
-	p.map(memmap_exraction, mmap_args)
+	p.map(mp_worker, mmap_args)
+
+
+#Spawn the threads and perform extraction
+if __name__ == '__main__':
+	mp_handler()
+
+
+
+
+#Write result to output file
+
+
+
+
+
+
+#Generate random background indices
+extract_cols = random.choices(range(xdim),k=n_background_pts)
+extract_rows = random.choices(range(ydim),k=n_background_pts)
+
+#create input tuple
+mmap_args = tuple(
+	[layer_dir+'/'+layer_files[i],
+	layer_datatypes[i],
+	i,
+	xdim,
+	ydim,
+	extract_rows,
+	extract_cols]
+	for i in range(nlayers)
+)
+
+background_arrays = []
+for i in range(nlayers):
+	extract_arrays.append(i)
+
+
+def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
+	print('Extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+	out_vals = memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns
+	#insert extracted values into list
+	extract_arrays[list_index] = out_vals
+	print('Finished extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+
+def bg_mp_hander():
+	p = mp.Pool(nlayers)
+	p.map(bg_mp_worker, mmap_args)
+
+
+#Spawn the threads and perform extraction
+if __name__ == '__main__':
+	bg_mp_handler()
