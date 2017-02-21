@@ -72,7 +72,7 @@ for i in range(nlayers):
 #----Create input list to run memmap_extraction in parallel using multiprocessing Pools
 mmap_args = []
 for i in range(nlayers):
-	mmap_args.append(tuple(
+	mmap_args.append((
 	layer_dir+'/'+layer_files[i],
 	layer_datatypes[i],
 	i,
@@ -122,7 +122,7 @@ for i in range(nlayers):
 #create input list
 mmap_args = []
 for i in range(nlayers):
-	mmap_args.append(tuple(
+	mmap_args.append((
 	layer_dir+'/'+layer_files[i],
 	layer_datatypes[i],
 	i,
