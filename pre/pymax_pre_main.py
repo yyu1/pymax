@@ -90,8 +90,8 @@ if __name__ == '__main__':
 	extract_arrays = p.starmap(mp_worker, mmap_args)
 
 #Write result to output file
-#print("Writing output to ", out_sample_file)
-#print(mmap_args)
+print(extract_arrays)
+print("Writing output to ", out_sample_file)
 writeswd.writeswd(out_sample_file, train_samples, layer_names, extract_arrays)
 
 
