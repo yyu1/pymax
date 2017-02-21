@@ -2,7 +2,7 @@
 
 import numpy as np
 
-def writeswd(outFileName, trainSamples, imageNames, extractionValues)
+def writeswd(outFileName, trainSamples, imageNames, extractionValues):
 
 	#validate input parameters
 	if not(type(outFileName) is str):
