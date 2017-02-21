@@ -22,6 +22,7 @@ def writeswd(outFileName, trainSamples, imageNames, extractionValues):
 		return
 
 	nsamples = 0
+	print(extractionValues)
 	for image in extractionValues:
 		if not(type(image) is np.ndarray):
 			print("Error, extractionValues type in list is not numpy.ndarray. Abort.")

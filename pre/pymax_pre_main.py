@@ -95,7 +95,6 @@ def mp_handler():
 	p.starmap(mp_worker, mmap_args)
 
 
-print(mmap_args)
 
 #Spawn the threads and perform extraction
 if __name__ == '__main__':
