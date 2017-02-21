@@ -48,50 +48,50 @@ for this_file in layer_files:
 #-------Read input training sample file and convert coordinates to columns and rows
 #NOTE: coordinates must be in the same units as those given in ulmapx, ulmapy, and pixsize.
 
-train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1,dtype=[('classname','S10'),('xcoord',np.float64),('ycoord',np.float64),('agb',np.float32),('category',np.int8)])
-#train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1)
-xcoord = train_samples['xcoord']
-ycoord = train_samples['ycoord']
-classname = train_samples['classname']
-
-#print(train_samples.shape[0])
-#print(train_samples.ndim)
-
-#print(xcoord)
-#print(ycoord)
-#print(classname)
-
-extract_cols = ((xcoord-ulmapx)/pixsize).astype(np.int32)
-extract_rows = ((ulmapy-ycoord)/pixsize).astype(np.int32)
-
-#----Create input list to run memmap_extraction in parallel using multiprocessing Pools
-mmap_args = []
-for i in range(nlayers):
-	mmap_args.append((
-	layer_dir+'/'+layer_files[i],
-	layer_datatypes[i],
-	i,
-	xdim,
-	ydim,
-	extract_rows,
-	extract_cols))
-	
-
-def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
-	print('Extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
-	out_vals = me.memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
-	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
-	return out_vals
-
-#Spawn the threads and perform extraction
-if __name__ == '__main__':
-	print("Run mp_handler for extraction of samples.")
-	p = mp.Pool(nlayers)
-	extract_arrays = p.starmap(mp_worker, mmap_args)
-
-#Write result to output file
-print("Writing output to ", out_sample_file)
-writeswd.writeswd(out_sample_file, train_samples, layer_names, extract_arrays)
+#train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1,dtype=[('classname','S10'),('xcoord',np.float64),('ycoord',np.float64),('agb',np.float32),('category',np.int8)])
+##train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1)
+#xcoord = train_samples['xcoord']
+#ycoord = train_samples['ycoord']
+#classname = train_samples['classname']
+#
+##print(train_samples.shape[0])
+##print(train_samples.ndim)
+#
+##print(xcoord)
+##print(ycoord)
+##print(classname)
+#
+#extract_cols = ((xcoord-ulmapx)/pixsize).astype(np.int32)
+#extract_rows = ((ulmapy-ycoord)/pixsize).astype(np.int32)
+#
+##----Create input list to run memmap_extraction in parallel using multiprocessing Pools
+#mmap_args = []
+#for i in range(nlayers):
+#	mmap_args.append((
+#	layer_dir+'/'+layer_files[i],
+#	layer_datatypes[i],
+#	i,
+#	xdim,
+#	ydim,
+#	extract_rows,
+#	extract_cols))
+#	
+#
+#def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
+#	print('Extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+#	out_vals = me.memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
+#	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+#	return out_vals
+#
+##Spawn the threads and perform extraction
+#if __name__ == '__main__':
+#	print("Run mp_handler for extraction of samples.")
+#	p = mp.Pool(nlayers)
+#	extract_arrays = p.starmap(mp_worker, mmap_args)
+#
+##Write result to output file
+#print("Writing output to ", out_sample_file)
+#writeswd.writeswd(out_sample_file, train_samples, layer_names, extract_arrays)
 
 
 
@@ -102,8 +102,8 @@ extract_rows = np.random.choice(ydim,n_background_pts)
 #create sample ndarray for background points
 background_samples = np.empty(n_background_pts, dtype=[('classname','S10'),('xcoord',np.float64),('ycoord',np.float64)])
 background_samples['classname'] = 'background'
-background_samples['xcoord'] = (ulmapx + (extract_cols+0.5)*pixsize).astype(np.float62)
-background_samples['ycoord'] = (ulmapy - (extract_rows+0.5)*pixsize).astype(np.float62)
+background_samples['xcoord'] = (ulmapx + (extract_cols+0.5)*pixsize).astype(np.float64)
+background_samples['ycoord'] = (ulmapy - (extract_rows+0.5)*pixsize).astype(np.float64)
 
 #create input list
 mmap_args = []
