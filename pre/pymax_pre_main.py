@@ -99,11 +99,11 @@ writeswd.writeswd(out_sample_file, train_samples, layer_names, extract_arrays)
 extract_cols = np.random.choice(xdim,n_background_pts)
 extract_rows = np.random.choice(ydim,n_background_pts)
 
-#output array
-background_arrays = []
-for i in range(nlayers):
-	extract_arrays.append(i)
-
+#create sample ndarray for background points
+background_samples = np.empty(n_background_pts, dtype=[('classname','S10'),('xcoord',np.float64),('ycoord',np.float64)])
+background_samples['classname'] = 'background'
+background_samples['xcoord'] = (ulmapx + (extract_cols+0.5)*pixsize).astype(np.float62)
+background_samples['ycoord'] = (ulmapy - (extract_rows+0.5)*pixsize).astype(np.float62)
 
 #create input list
 mmap_args = []
@@ -118,7 +118,6 @@ for i in range(nlayers):
 	extract_cols))
 
 
-
 def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
 	print('Extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 	out_vals = me.memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
@@ -130,7 +129,11 @@ def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_
 if __name__ == '__main__':
 	print("Run bg_mp_handler")
 	p = mp.Pool(nlayers)
-	extract_arrays = p.starmap(bg_mp_worker, mmap_args)
+	background_arrays = p.starmap(bg_mp_worker, mmap_args)
+
+#Write result to output file
+print("Writing output to ", out_background_file)
+writeswd.writeswd(out_background_file, background_samples, layer_names, background_arrays)
 
 print('Done!','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 
