@@ -57,7 +57,7 @@ def writeswd(outFileName, trainSamples, imageNames, extractionValues):
 
 		#write extraction values
 		for index in range(nsamples):
-			print(str(classname[index]))
+			print(classname[index].decode("utf-8"))
 			print(',{:.2f},{:.2f}'.format(xcoord[index],ycoord[index]))
 			outline = classname[index] + ',{:.2f},{:.2f}'.format(xcoord[index],ycoord[index])
 			for image in extractionValues:
