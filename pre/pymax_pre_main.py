@@ -105,6 +105,7 @@ if __name__ == '__main__':
 
 #Write result to output file
 print("Writing output to ", out_sample_file)
+print(mmap_args)
 writeswd.writeswd(out_sample_file, train_samples, layer_names, extract_arrays)
 
 
