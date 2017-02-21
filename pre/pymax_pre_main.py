@@ -3,7 +3,6 @@ import os
 import multiprocessing as mp
 import memmap_extraction
 import datetime
-import random
 import writeswd
 
 #-----------Settings-----------------
@@ -110,8 +109,8 @@ writeswd.writeswd(out_sample_file, train_samples, layer_names, extract_arrays)
 
 
 #Generate random background indices
-extract_cols = random.choices(range(xdim),k=n_background_pts)
-extract_rows = random.choices(range(ydim),k=n_background_pts)
+extract_cols = np.random.choice(xdim,n_background_pts)
+extract_rows = np.random.choice(ydim,n_background_pts)
 
 #output array
 background_arrays = []
