@@ -4,6 +4,7 @@ import multiprocessing as mp
 import memmap_extraction
 import datetime
 import random
+import writeswd
 
 #-----------Settings-----------------
 #in_sample_file = '/nobackup/yyu1/samples/agb_train_v6/maxent_train_agb_v6_afr_train.csv'
@@ -101,12 +102,9 @@ if __name__ == '__main__':
 #	mp_handler()
 	print("Run mp_handler")
 
-
-
-
 #Write result to output file
-
-
+print("Writing output to ", out_sample_file)
+writeswd.writeswd(out_sample_file, train_samples, layer_names, extract_arrays)
 
 
 
