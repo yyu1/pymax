@@ -54,8 +54,8 @@ xcoord = train_samples['xcoord']
 ycoord = train_samples['ycoord']
 classname = train_samples['classname']
 
-print(train_samples.shape[0])
-print(train_samples.ndim)
+#print(train_samples.shape[0])
+#print(train_samples.ndim)
 
 #print(xcoord)
 #print(ycoord)
@@ -91,15 +91,17 @@ def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_row
 	extract_arrays[list_index] = out_vals
 	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 
-def mp_hander():
+def mp_handler():
 	p = mp.Pool(nlayers)
 	p.map(mp_worker, mmap_args)
 
 
+print(mmap_args)
+
 #Spawn the threads and perform extraction
 if __name__ == '__main__':
-#	mp_handler()
-	print("Run mp_handler")
+	print("Run mp_handler for extraction of samples.")
+	mp_handler()
 
 #Write result to output file
 print("Writing output to ", out_sample_file)
