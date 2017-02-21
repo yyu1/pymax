@@ -64,11 +64,6 @@ classname = train_samples['classname']
 extract_cols = ((xcoord-ulmapx)/pixsize).astype(np.int32)
 extract_rows = ((ulmapy-ycoord)/pixsize).astype(np.int32)
 
-#---create list to hold output of extraction
-extract_arrays = []
-for i in range(nlayers):
-	extract_arrays.append(i)
-
 #----Create input list to run memmap_extraction in parallel using multiprocessing Pools
 mmap_args = []
 for i in range(nlayers):
@@ -92,22 +87,16 @@ def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_row
 	print(extract_arrays)	
 	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 
-def mp_handler():
-	p = mp.Pool(nlayers)
-	p.starmap(mp_worker, mmap_args)
-
-
-
 #Spawn the threads and perform extraction
 if __name__ == '__main__':
 	print("Run mp_handler for extraction of samples.")
-	mp_handler()
+	p = mp.Pool(nlayers)
+	extract_arrays = p.starmap(mp_worker, mmap_args)
 
 #Write result to output file
-print("Writing output to ", out_sample_file)
-print(mmap_args)
+#print("Writing output to ", out_sample_file)
+#print(mmap_args)
 writeswd.writeswd(out_sample_file, train_samples, layer_names, extract_arrays)
-
 
 
 
@@ -143,12 +132,9 @@ def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_
 	extract_arrays[list_index] = out_vals
 	print('Finished extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 
-def bg_mp_hander():
-	p = mp.Pool(nlayers)
-	p.starmap(bg_mp_worker, mmap_args)
-
 
 #Spawn the threads and perform extraction
 if __name__ == '__main__':
-#	bg_mp_handler()
+	#p = mp.Pool(nlayers)
+	#extract_arrays = p.starmap(bg_mp_worker, mmap_args)
 	print("Run bg_mp_handler")
