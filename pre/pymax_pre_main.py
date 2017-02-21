@@ -69,19 +69,18 @@ extract_arrays = []
 for i in range(nlayers):
 	extract_arrays.append(i)
 
-#----Create input tuple of lists to run memmap_extraction in parallel using multiprocessing Pools
-mmap_args = tuple(
-	[layer_dir+'/'+layer_files[i],
+#----Create input list to run memmap_extraction in parallel using multiprocessing Pools
+mmap_args = []
+for i in range(nlayers):
+	mmap_args.append(tuple(
+	layer_dir+'/'+layer_files[i],
 	layer_datatypes[i],
 	i,
 	xdim,
 	ydim,
 	extract_rows,
 	extract_cols,
-	extract_arrays]
-	for i in range(nlayers)
-)
-
+	extract_arrays))
 	
 
 def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns, extract_arrays):
@@ -93,7 +92,7 @@ def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_row
 
 def mp_handler():
 	p = mp.Pool(nlayers)
-	p.map(mp_worker, mmap_args)
+	p.starmap(mp_worker, mmap_args)
 
 
 print(mmap_args)
@@ -120,17 +119,18 @@ for i in range(nlayers):
 	extract_arrays.append(i)
 
 
-#create input tuple
-mmap_args = tuple(
-	[layer_dir+'/'+layer_files[i],
+#create input list
+mmap_args = []
+for i in range(nlayers):
+	mmap_args.append(tuple(
+	layer_dir+'/'+layer_files[i],
 	layer_datatypes[i],
 	i,
 	xdim,
 	ydim,
 	extract_rows,
-	extract_cols]
-	for i in range(nlayers)
-)
+	extract_cols,
+	extract_arrays))
 
 
 
@@ -143,7 +143,7 @@ def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_
 
 def bg_mp_hander():
 	p = mp.Pool(nlayers)
-	p.map(bg_mp_worker, mmap_args)
+	p.starmap(bg_mp_worker, mmap_args)
 
 
 #Spawn the threads and perform extraction
