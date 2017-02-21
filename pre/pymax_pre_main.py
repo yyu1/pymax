@@ -33,8 +33,8 @@ layer_datatypes = [np.int16, np.int16, np.uint8, np.int16, np.int16, np.uint8, n
 missings_vals = [-999, -999, 0, -999, 0, 0, 0]
 
 n_background_pts = np.uint32(5000000)
-out_sample_file = '/nobackupp6/nexprojects/CMS-ALOS/maxent/swd/v6/afr/afr_train_v6.swd'
-out_background_file = '/nobackupp6/nexprojects/CMS-ALOS/maxent/swd/v6/afr/afr_background_0.002.swd'
+out_sample_file = '/nobackupp6/nexprojects/CMS-ALOS/maxent/swd/v6/afr/afr_train_v6.swd.csv'
+out_background_file = '/nobackupp6/nexprojects/CMS-ALOS/maxent/swd/v6/afr/afr_background_0.002.swd.csv'
 
 #------------------------------------
 
