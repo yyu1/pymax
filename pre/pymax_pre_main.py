@@ -87,6 +87,8 @@ def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_row
 	print('Extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 	out_vals = me.memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
 	#insert extracted values into list
+	print(out_vals)
+	
 	extract_arrays[list_index] = out_vals
 	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 
