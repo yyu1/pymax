@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import multiprocessing as mp
-import memmap_extraction
+import memmap_extraction as me
 import datetime
 import writeswd
 
@@ -85,7 +85,7 @@ for i in range(nlayers):
 
 def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns, extract_arrays):
 	print('Extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
-	out_vals = memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
+	out_vals = me.memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
 	#insert extracted values into list
 	extract_arrays[list_index] = out_vals
 	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
@@ -136,7 +136,7 @@ for i in range(nlayers):
 
 def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns,extract_arrays):
 	print('Extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
-	out_vals = memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
+	out_vals = me.memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
 	#insert extracted values into list
 	extract_arrays[list_index] = out_vals
 	print('Finished extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
