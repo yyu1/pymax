@@ -74,18 +74,14 @@ for i in range(nlayers):
 	xdim,
 	ydim,
 	extract_rows,
-	extract_cols,
-	extract_arrays))
+	extract_cols))
 	
 
-def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns, extract_arrays):
+def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
 	print('Extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 	out_vals = me.memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
-	#insert extracted values into list
-	print(extract_arrays)	
-	extract_arrays[list_index] = out_vals
-	print(extract_arrays)	
 	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+	return out_vals
 
 #Spawn the threads and perform extraction
 if __name__ == '__main__':
@@ -120,17 +116,15 @@ for i in range(nlayers):
 	xdim,
 	ydim,
 	extract_rows,
-	extract_cols,
-	extract_arrays))
+	extract_cols))
 
 
 
-def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns,extract_arrays):
+def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
 	print('Extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
 	out_vals = me.memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
-	#insert extracted values into list
-	extract_arrays[list_index] = out_vals
 	print('Finished extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+	return out_vals
 
 
 #Spawn the threads and perform extraction
