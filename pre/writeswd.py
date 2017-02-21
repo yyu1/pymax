@@ -53,6 +53,8 @@ def writeswd(outFileName, trainSamples, imageNames, extractionValues):
 		ycoord = trainSamples['ycoord']
 		classname = trainSamples['classname']
 
+		print(xcoord)
+
 		#write extraction values
 		for index in range(nsamples):
 			outline = classname[index] + ',{:.2f},{:.2f}'.format(xcoord,ycoord)
