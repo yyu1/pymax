@@ -48,12 +48,26 @@ for this_file in layer_files:
 #-------Read input training sample file and convert coordinates to columns and rows
 #NOTE: coordinates must be in the same units as those given in ulmapx, ulmapy, and pixsize.
 
-train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1)
-xcoord = train_samples[:,1]
-ycoord = train_samples[:,2]
+train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1,dtype=[('classname','S10'),('xcoord',np.float64),('ycoord',np.float64),('agb',np.float32),('category',np.int8)])
+#train_samples = np.genfromtxt(in_sample_file, delimiter=',', skip_header=1)
+xcoord = train_samples['xcoord']
+ycoord = train_samples['ycoord']
+classname = train_samples['classname']
+
+print(train_samples.shape[0])
+print(train_samples.ndim)
+
+#print(xcoord)
+#print(ycoord)
+#print(classname)
 
 extract_cols = ((xcoord-ulmapx)/pixsize).astype(np.int32)
 extract_rows = ((ulmapy-ycoord)/pixsize).astype(np.int32)
+
+#---create list to hold output of extraction
+extract_arrays = []
+for i in range(nlayers):
+	extract_arrays.append(i)
 
 #----Create input tuple of lists to run memmap_extraction in parallel using multiprocessing Pools
 mmap_args = tuple(
@@ -63,19 +77,16 @@ mmap_args = tuple(
 	xdim,
 	ydim,
 	extract_rows,
-	extract_cols]
+	extract_cols,
+	extract_arrays]
 	for i in range(nlayers)
 )
 
-#---create list to hold output of extraction
-extract_arrays = []
-for i in range(nlayers):
-	extract_arrays.append(i)
 	
 
-def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
+def mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns, extract_arrays):
 	print('Extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
-	out_vals = memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns
+	out_vals = memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
 	#insert extracted values into list
 	extract_arrays[list_index] = out_vals
 	print('Finished extracting from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
@@ -87,7 +98,8 @@ def mp_hander():
 
 #Spawn the threads and perform extraction
 if __name__ == '__main__':
-	mp_handler()
+#	mp_handler()
+	print("Run mp_handler")
 
 
 
@@ -103,6 +115,12 @@ if __name__ == '__main__':
 extract_cols = random.choices(range(xdim),k=n_background_pts)
 extract_rows = random.choices(range(ydim),k=n_background_pts)
 
+#output array
+background_arrays = []
+for i in range(nlayers):
+	extract_arrays.append(i)
+
+
 #create input tuple
 mmap_args = tuple(
 	[layer_dir+'/'+layer_files[i],
@@ -115,14 +133,11 @@ mmap_args = tuple(
 	for i in range(nlayers)
 )
 
-background_arrays = []
-for i in range(nlayers):
-	extract_arrays.append(i)
 
 
-def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns):
+def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_rows, extract_columns,extract_arrays):
 	print('Extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
-	out_vals = memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns
+	out_vals = memmap_extraction(inFileName, data_type, in_dim_x, in_dim_y, extract_rows, extract_columns)
 	#insert extracted values into list
 	extract_arrays[list_index] = out_vals
 	print('Finished extracting background points from',inFileName,'...','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
@@ -134,4 +149,5 @@ def bg_mp_hander():
 
 #Spawn the threads and perform extraction
 if __name__ == '__main__':
-	bg_mp_handler()
+#	bg_mp_handler()
+	print("Run bg_mp_handler")
