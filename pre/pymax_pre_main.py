@@ -6,8 +6,8 @@ import datetime
 import writeswd
 
 #-----------Settings-----------------
-#in_sample_file = '/nobackup/yyu1/samples/agb_train_v6/maxent_train_agb_v6_afr_train.csv'
-in_sample_file = 'sample_train.csv'
+in_sample_file = '/nobackup/yyu1/samples/agb_train_v6/maxent_train_agb_v6_afr_train.csv'
+#in_sample_file = 'sample_train.csv'
 
 layer_dir = '/nobackupp6/nexprojects/CMS-ALOS/maxent/layers/binary/afr'
 layer_files = [
@@ -128,6 +128,9 @@ def bg_mp_worker(inFileName, data_type, list_index, in_dim_x, in_dim_y, extract_
 
 #Spawn the threads and perform extraction
 if __name__ == '__main__':
-	#p = mp.Pool(nlayers)
-	#extract_arrays = p.starmap(bg_mp_worker, mmap_args)
 	print("Run bg_mp_handler")
+	p = mp.Pool(nlayers)
+	extract_arrays = p.starmap(bg_mp_worker, mmap_args)
+
+print('Done!','Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+
