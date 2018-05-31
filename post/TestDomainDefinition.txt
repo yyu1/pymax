@@ -1,0 +1,6 @@
+xmin	-100
+ymax	85
+xdim	2000
+ydim	3000
+xpixwidth	0.05
+ypixwidth	0.05
