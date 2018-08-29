@@ -1,6 +1,6 @@
-xmin	-100
-ymax	85
-xdim	2000
-ydim	3000
-xpixwidth	0.05
-ypixwidth	0.05
+xmin	-20015109.3529
+ymax	8450823.9426
+xdim	432000
+ydim	159600
+xpixwidth	92.662543301
+ypixwidth	92.662543301
