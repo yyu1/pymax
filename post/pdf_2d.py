@@ -24,7 +24,7 @@ import os
 import csv
 import math
 
-def pdf_2d(input_file_name, domain_def_file_name, min_points, pdf_out_file):
+def pdf_2d(input_file_name, domain_def_file_name, min_points, pdf_out_def, pdf_out_file):
 
 	print("Creating prior probability map...")
 
@@ -61,18 +61,60 @@ def pdf_2d(input_file_name, domain_def_file_name, min_points, pdf_out_file):
 	categories = imported_data['category']
 
 	category_set = set(categories)
-	print("Number of categories: ", len(category_set))
+	n_categories = len(category_set)
+	print("Number of categories: ", n_categories)
 	print(category_set)
 
 	print("Minimum number of points: ", min_points)
 	points_per_area = float(total_input_points) / total_area
 
-	min_area = min_points * 10 / points_per_area
+	min_area = min_points / points_per_area
 	pdf_box_width = math.sqrt(min_area)
 	min_pdf_xpix = math.ceil(pdf_box_width / domaindict["xpixwidth"])
 	min_pdf_ypix = math.ceil(pdf_box_width / domaindict["ypixwidth"])
+	output_xdim = math.ceil(domaindict["xdim"] / min_pdf_xpix)
+	output_ydim = math.ceil(domaindict["ydim"] / min_pdf_ypix)
 
-	print("Area to get 10x min points per area: ", min_points * 10 / points_per_area)
+	print("Area to get min points per area: ", min_points / points_per_area)
 	print("min pdf box x dimension: ", min_pdf_xpix)
 	print("min pdf box y dimension: ", min_pdf_ypix)
+	print("output pdf x-dimension: ", output_xdim)
+	print("output pdf y-dimension: ", output_ydim)
 
+	#Create output numpy array
+	original_pdf_count = np.zeros([n_categories,output_ydim,output_xdim],dtype=np.uint32)
+	#cycle through all input points
+	tl_x_coord = domaindict["xmin"]
+	tl_y_coord = domaindict["ymax"]
+	
+	for i in range(0,total_input_points):
+	#for i in range(0,10):
+		#print(imported_data['xcoord'][i], imported_data['ycoord'][i], tl_x_coord, domaindict["xpixwidth"])
+		#print((imported_data['xcoord'][i]-tl_x_coord)/domaindict["xpixwidth"])
+		xpix = int((imported_data['xcoord'][i]-tl_x_coord)/domaindict["xpixwidth"])
+		ypix = int((tl_y_coord - imported_data['ycoord'][i])/domaindict["ypixwidth"])
+
+		pdf_x = int(xpix/min_pdf_xpix)
+		pdf_y = int(ypix/min_pdf_ypix)
+
+		#print("xpix:", xpix, "ypix:", ypix, "pdf_x:", pdf_x, "pdf_y", pdf_y)
+		original_pdf_count[categories[i],pdf_y,pdf_x] += 1
+
+	#Create output pdf counts based on calculating from neighboring areas
+	#Use a 11x11 box surrounding each pdf image pixel to get prior for that pixel
+	out_pdf_count = np.zeros([n_categories,output_ydim,output_xdim],dtype=np.uint32)
+	for j in range(0,output_ydim):
+		for i in range(0,output_xdim):
+			xindex_min = max(0,i-5)
+			xindex_max = min(output_xdim-1,i+5)
+			yindex_min = max(0,j-5)
+			yindex_max = min(output_ydim-1,j+5)
+			for i_cat in range(0,n_categories):
+				out_pdf_count[i_cat,j,i] = np.sum(original_pdf_count[i_cat,yindex_min:yindex_max,xindex_min:xindex_max])
+			
+	
+	#Write pdf count to output file
+	with open(pdf_out_file, 'wb') as outfile:
+		out_pdf_count[10,:,:].tofile(outfile)	
+
+	#write pdf definition file
