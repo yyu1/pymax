@@ -115,6 +115,10 @@ def pdf_2d(input_file_name, domain_def_file_name, min_points, pdf_out_def, pdf_o
 	
 	#Write pdf count to output file
 	with open(pdf_out_file, 'wb') as outfile:
-		out_pdf_count[10,:,:].tofile(outfile)	
+		#out_pdf_count[10,:,:].tofile(outfile)	
+		out_pdf_count.tofile(outfile)	
 
 	#write pdf definition file
+	with open(pdf_out_def, 'w') as outfile:
+		outfile.write('xdim\t'+str(output_xdim)+'\n')
+		outfile.write('ydim\t'+str(output_ydim))
