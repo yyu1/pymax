@@ -1,3 +1,8 @@
+import numpy as np
+import numexpr
+import os
+import csv
+import math
 
 #Calculate local probability density 
 
@@ -18,11 +23,6 @@
 #       
 #
 
-import numpy as np
-import numexpr
-import os
-import csv
-import math
 
 def pdf_2d(input_file_name, domain_def_file_name, min_points, pdf_out_def, pdf_out_file):
 
@@ -122,3 +122,9 @@ def pdf_2d(input_file_name, domain_def_file_name, min_points, pdf_out_def, pdf_o
 	with open(pdf_out_def, 'w') as outfile:
 		outfile.write('xdim\t'+str(output_xdim)+'\n')
 		outfile.write('ydim\t'+str(output_ydim))
+
+
+
+def combine_maxent(domain_def_file, prior_def_file, prior_pdf_file, bin_file, in_dir, out_dir):
+	
+
